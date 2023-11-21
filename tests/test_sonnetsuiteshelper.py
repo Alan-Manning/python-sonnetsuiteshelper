@@ -1,4 +1,3 @@
-
 from sonnetsuiteshelper.cli import main
 
 

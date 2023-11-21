@@ -125,13 +125,11 @@ def generate_file_like(
     if output_filename[-4:] == ".son":
         output_filename = output_filename[:-4]
 
-    output_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    output_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
 
     final_file = os.path.join(output_file_path, output_filename)
 
-    with open(base_file, "r") as f:
+    with open(base_file) as f:
         contents = f.read()
 
     # If params dict not empty then change vals
@@ -143,9 +141,7 @@ def generate_file_like(
                 replacement = f'VALVAR {key} LNG {val} "Dim. Param."'
                 contents = pattern.sub(replacement, contents)
             else:
-                print(
-                    f"WARNING:\n\tParmeter {key} not found in file. Nothing changed, moving on."
-                )
+                print(f"WARNING:\n\tParmeter {key} not found in file. Nothing changed, moving on.")
 
     # If general_metals dict not empty then change vals
     if general_metals_to_edit:
@@ -158,11 +154,7 @@ def generate_file_like(
                 )
                 continue
 
-            full_pattern = re.compile(
-                r'MET "'
-                + metal_name
-                + r'" \d+ SUP( [+\-]?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+\-]?\d+)?){4}'
-            )
+            full_pattern = re.compile(r'MET "' + metal_name + r'" \d+ SUP( [+\-]?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+\-]?\d+)?){4}')
             match = full_pattern.search(contents)
             if match:
                 metal_match_string = match.group()
@@ -172,29 +164,21 @@ def generate_file_like(
                 Xdc = vals["Xdc"]
                 Ls = vals["Ls"]
 
-                values_pattern = re.compile(
-                    r"( [+\-]?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+\-]?\d+)?){4}"
-                )
+                values_pattern = re.compile(r"( [+\-]?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+\-]?\d+)?){4}")
                 values_to_put_in = f" {Rdc} {Rrf} {Xdc} {Ls}"
 
-                new_metal_string = values_pattern.sub(
-                    values_to_put_in, metal_match_string
-                )
+                new_metal_string = values_pattern.sub(values_to_put_in, metal_match_string)
 
                 contents = full_pattern.sub(new_metal_string, contents)
             else:
-                print(
-                    f"WARNING:\n\tGeneral metal {metal_name} not found in file. Nothing changed, moving on."
-                )
+                print(f"WARNING:\n\tGeneral metal {metal_name} not found in file. Nothing changed, moving on.")
 
     # If sweeps dict not empty then change vals
     if adaptive_sweeps_to_edit:
         keys_needed = ["sweep_min", "sweep_max", "target_freqs"]
         # check that the correct keys are in the dict and if so do replacement
         if all(key in adaptive_sweeps_to_edit for key in keys_needed):
-            full_pattern = re.compile(
-                r"FREQ \w+ AY ABS_ENTRY( (-)?[0-9]\d*(\.\d+)?){4}"
-            )
+            full_pattern = re.compile(r"FREQ \w+ AY ABS_ENTRY( (-)?[0-9]\d*(\.\d+)?){4}")
             match = full_pattern.search(contents)
             if match:
                 abs_sweep_match_string = match.group()
@@ -203,25 +187,17 @@ def generate_file_like(
                 new_sweep_max = adaptive_sweeps_to_edit["sweep_max"]
                 target_freqs = adaptive_sweeps_to_edit["target_freqs"]
 
-                sweep_min_max_pattern = re.compile(
-                    r"ABS_ENTRY( (-)?[0-9]\d*(\.\d+)?){2}"
-                )
+                sweep_min_max_pattern = re.compile(r"ABS_ENTRY( (-)?[0-9]\d*(\.\d+)?){2}")
                 sweep_min_max_replacement = f"ABS_ENTRY {new_sweep_min} {new_sweep_max}"
-                new_abs_sweep_string = sweep_min_max_pattern.sub(
-                    sweep_min_max_replacement, abs_sweep_match_string
-                )
+                new_abs_sweep_string = sweep_min_max_pattern.sub(sweep_min_max_replacement, abs_sweep_match_string)
 
                 target_freqs_pattern = re.compile(r"(\d+)\D*$")
                 target_freqs_replacement = f"{target_freqs}"
-                new_abs_sweep_string = target_freqs_pattern.sub(
-                    target_freqs_replacement, new_abs_sweep_string
-                )
+                new_abs_sweep_string = target_freqs_pattern.sub(target_freqs_replacement, new_abs_sweep_string)
 
                 contents = full_pattern.sub(new_abs_sweep_string, contents)
             else:
-                print(
-                    "WARNING:\n\tCan't find an adaptive sweep to alter. Nothing changed, moving on."
-                )
+                print("WARNING:\n\tCan't find an adaptive sweep to alter. Nothing changed, moving on.")
 
         else:
             print(
@@ -244,15 +220,11 @@ def generate_file_like(
 
                 values_pattern = re.compile(r"( (-)?[0-9]\d*(\.\d+)?){3}")
                 values_to_put_in = f" {new_sweep_min} {new_sweep_max} {step_size}"
-                new_linear_sweep_string = values_pattern.sub(
-                    values_to_put_in, linear_sweep_match_string
-                )
+                new_linear_sweep_string = values_pattern.sub(values_to_put_in, linear_sweep_match_string)
 
                 contents = full_pattern.sub(new_linear_sweep_string, contents)
             else:
-                print(
-                    "WARNING:\n\tCan't find an linear sweep to alter. Nothing changed, moving on."
-                )
+                print("WARNING:\n\tCan't find an linear sweep to alter. Nothing changed, moving on.")
 
         else:
             print(
@@ -262,8 +234,5 @@ def generate_file_like(
     with open(final_file, "w") as f:
         f.write(contents)
 
-    print(
-        f"Written file to drive:\n\tname: {output_filename}\n\tpath: {output_file_path}"
-    )
+    print(f"Written file to drive:\n\tname: {output_filename}\n\tpath: {output_file_path}")
     return
-
