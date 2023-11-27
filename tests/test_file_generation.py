@@ -63,7 +63,6 @@ def test_base_file_not_present() -> None:
             general_metals_to_edit=general_metals_to_edit,
             adaptive_sweeps_to_edit=sweeps_to_edit,
         )
-    pass
 
 
 def test_output_dir_doesnt_exist() -> None:
@@ -77,9 +76,7 @@ def test_output_dir_doesnt_exist() -> None:
     general_metals_to_edit = {}
     sweeps_to_edit = {}
 
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
     if os.path.isfile(generated_file):
@@ -98,16 +95,11 @@ def test_output_dir_doesnt_exist() -> None:
     )
 
     # compare the output to the desired output.
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__no_alterations() -> None:
@@ -134,21 +126,14 @@ def test_generate_file_like__no_alterations() -> None:
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__no_son_extentions() -> None:
@@ -175,19 +160,14 @@ def test_generate_file_like__no_son_extentions() -> None:
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename[:-4]}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename[:-4]}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
     desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__1_param_changed() -> None:
@@ -214,21 +194,14 @@ def test_generate_file_like__1_param_changed() -> None:
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__many_params_changed() -> None:
@@ -266,21 +239,14 @@ def test_generate_file_like__many_params_changed() -> None:
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__params_not_in_file_changed() -> None:
@@ -311,21 +277,14 @@ def test_generate_file_like__params_not_in_file_changed() -> None:
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__1_general_metal_changed() -> None:
@@ -352,21 +311,14 @@ def test_generate_file_like__1_general_metal_changed() -> None:
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__many_general_metals_changed() -> None:
@@ -398,21 +350,14 @@ def test_generate_file_like__many_general_metals_changed() -> None:
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__many_general_metals_not_in_file() -> None:
@@ -442,21 +387,14 @@ def test_generate_file_like__many_general_metals_not_in_file() -> None:
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__many_general_metals_with_incorrect_keys() -> None:
@@ -494,21 +432,14 @@ def test_generate_file_like__many_general_metals_with_incorrect_keys() -> None:
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__many_general_metals_and_many_params_changed() -> None:
@@ -540,21 +471,14 @@ def test_generate_file_like__many_general_metals_and_many_params_changed() -> No
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__adaptive_sweep_changed() -> None:
@@ -581,21 +505,14 @@ def test_generate_file_like__adaptive_sweep_changed() -> None:
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
 
 
 def test_generate_file_like__linear_sweep_changed() -> None:
@@ -622,19 +539,11 @@ def test_generate_file_like__linear_sweep_changed() -> None:
     )
 
     # compare the output to the desired output.
-    generated_filename = (
-        f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
-    )
+    generated_filename = f"{output_filename_prefix}{output_filename}{output_filename_suffix}.son"
     generated_file = os.path.join(output_file_path, generated_filename)
 
-    desired_output_file = os.path.join(
-        desired_output_files_path, f"{output_filename}.son"
-    )
+    desired_output_file = os.path.join(desired_output_files_path, f"{output_filename}.son")
 
-    generated_file_matches_desired_output = filecmp.cmp(
-        generated_file, desired_output_file
-    )
+    generated_file_matches_desired_output = filecmp.cmp(generated_file, desired_output_file)
 
     assert generated_file_matches_desired_output
-    pass
-
