@@ -2,4 +2,4 @@
 Authors
 =======
 
-* Alan Manning - https://github.com/Alan-Manning/python-sonnetsuiteshelper
+* Alan Manning - https://github.com/Alan-Manning

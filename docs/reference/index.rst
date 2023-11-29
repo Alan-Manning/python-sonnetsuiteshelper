@@ -1,7 +1,10 @@
-Reference
-=========
+#############
+API Reference
+#############
+
 
 .. toctree::
-    :glob:
+    :maxdepth: 1
 
-    sonnetsuiteshelper*
+    file_generation
+    analysis

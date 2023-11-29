@@ -1,13 +1,13 @@
 import os
 
 extensions = [
+    "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
     "sphinx.ext.doctest",
     "sphinx.ext.extlinks",
     "sphinx.ext.ifconfig",
-    "sphinx.ext.napoleon",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
 ]
@@ -40,5 +40,7 @@ html_sidebars = {
 html_short_title = f"{project}-{version}"
 
 napoleon_use_ivar = True
-napoleon_use_rtype = False
+napoleon_use_rtype = True
 napoleon_use_param = False
+napoleon_numpy_docstring = True
+napoleon_custom_sections = [("KwArgs", "Keyword Arguments")]

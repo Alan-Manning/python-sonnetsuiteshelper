@@ -29,8 +29,9 @@ The best way to send feedback is to file an issue at https://github.com/Alan-Man
 If you are proposing a feature:
 
 * Explain in detail how it would work.
+* Use the Feature Request label.
 * Keep the scope as narrow as possible, to make it easier to implement.
-* Remember that this is a volunteer-driven project, and that code contributions are welcome :)
+* Code contributions are welcome :) if you already have an implementation. See `Development`_.
 
 Development
 ===========

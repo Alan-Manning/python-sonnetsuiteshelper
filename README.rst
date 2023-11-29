@@ -51,7 +51,7 @@ Overview
 
 .. end-badges
 
-An example package. Generated with cookiecutter-pylibrary.
+sonnetsuiteshelper is a package designed to help with editing and analysing Sonnet Suites files.
 
 * Free software: GNU Lesser General Public License v3 or later (LGPLv3+)
 
@@ -72,6 +72,15 @@ Documentation
 
 
 https://python-sonnetsuiteshelper.readthedocs.io/
+
+
+Feature Requests
+================
+
+
+To request a new feature or extend existing features please create a github issue with the label "Feature Request"
+
+https://github.com/Alan-Manning/python-sonnetsuiteshelper/issues
 
 
 Development

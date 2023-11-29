@@ -51,7 +51,7 @@ def generate_file_like(
         This is a string to add to the end of the filename. Default is a
         blank string.
 
-    params_to_edit : dict [str, (float or int)]
+    params_to_edit : dict
         This is a dictionary that has keys of parameter names and values of the
         values those parameters should take. Note the values must be of type
         float or int. This can take any number of key and value pairs. If there
@@ -99,7 +99,6 @@ def generate_file_like(
                 "sweep_max" : 5.0,
                 "step_size" : 0.1,
             }
-
 
     """
 
@@ -236,3 +235,4 @@ def generate_file_like(
 
     print(f"Written file to drive:\n\tname: {output_filename}\n\tpath: {output_file_path}")
     return
+
