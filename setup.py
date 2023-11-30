@@ -65,6 +65,9 @@ setup(
     python_requires=">=3.8",
     install_requires=[
         # eg: "aspectlib==1.1.1", "six>=1.7",
+        "numpy",
+        "pandas",
+        "scipy",
     ],
     extras_require={
         # eg:
