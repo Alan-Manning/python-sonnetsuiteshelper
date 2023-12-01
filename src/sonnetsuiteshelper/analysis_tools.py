@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
 from scipy.interpolate import UnivariateSpline
 from scipy.optimize import curve_fit
 from scipy.signal import find_peaks
@@ -51,6 +52,8 @@ class SonnetCSVOutputFile:
         if file_name[-4:] != ".csv":
             file_name = file_name + ".csv"
 
+        self.file_name = file_name[:-4]
+
         live_file = os.path.join(file_path, file_name)
 
         file_exists = os.path.isfile(live_file)
@@ -74,30 +77,83 @@ class SonnetCSVOutputFile:
 
         self.file_data = file_data
         self.freqs = np.array(self.file_data["Frequency (GHz)"] * 1e9)  # converty GHz to Hz
-        self.S21_mag = np.abs(file_data["RE[S21]"] + 1j * file_data["IM[S21]"])
+        self.S21_mag = np.array(np.abs(file_data["RE[S21]"] + 1j * file_data["IM[S21]"]))
 
     def __str__(self):
         return f"SonnetCSVOutputFile\n\tname: {self.file_name}\n\tParameter: {self.parameter}\n\tComplex: {self.complex}"
+
+    def _get_indices_around_peak(self, y_data, no_points_around_peak=200):
+        """
+        get the indices around the peak in the data
+        """
+        peaks_in_data = find_peaks(y_data)
+        if len(peaks_in_data[0]) == 0:
+            raise (Exception("No Peaks found in data"))
+
+        peak_index = peaks_in_data[0][0]
+
+        indices_around_peak = range(peak_index - no_points_around_peak, peak_index + no_points_around_peak)
+
+        return indices_around_peak
+
+    def plot_data(self, x_ax="freq_MHz", y_ax="S21_mag_dB"):
+        """
+        plots the data in the csv, default is plotting the S21_mag_dB against freq
+        """
+
+        x_lookup = {
+            "freq_Hz": {"data": self.freqs, "label": "freq", "units": "Hz"},
+            "freq_MHz": {"data": self.freqs * 1e-6, "label": "freq", "units": "MHz"},
+            "freq_GHz": {"data": self.freqs * 1e-9, "label": "freq", "units": "GHz"},
+        }
+
+        y_lookup = {
+            "S21_mag": {"data": self.S21_mag, "label": "S21 mag", "units": "V**2"},
+            "S21_mag_dB": {"data": volts_to_db(self.S21_mag), "label": "S21 mag", "units": "dB"},
+        }
+
+        x_data = x_lookup[x_ax]["data"]
+        x_label = x_lookup[x_ax]["label"]
+        x_units = x_lookup[x_ax]["units"]
+
+        y_data = y_lookup[y_ax]["data"]
+        y_label = y_lookup[y_ax]["label"]
+        y_units = y_lookup[y_ax]["units"]
+
+        title = f"File = {self.file_name}"
+
+        fig = plt.figure(title)
+        rows = 1
+        cols = 1
+        grid = plt.GridSpec(rows, cols)  # , top=0.95, bottom=0.092, left=0.05, right=0.95, hspace=0.0, wspace=0.2)
+
+        ax0 = plt.subplot(grid[0, 0])
+
+        ax0.scatter(x_data, y_data, s=0.5, color="C0")
+        ax0.plot(x_data, y_data, linewidth=0.2, alpha=0.3, color="C0")
+
+        ax0.set_title(title, loc="left")
+        ax0.set_xlabel(f"{x_label}     ({x_units})")
+        ax0.set_ylabel(f"{y_label}     ({y_units})")
+        ax0.grid(alpha=0.3)
+        # ax0.legend(loc="best")
+
+        fig.show()
 
     def get_resonant_freq(self) -> float:
         """
         Get the resonant frequency (*in Hz*) from the data
         """
         # find the peak in the data
-        peaks_in_data = find_peaks(self.S21_mag, height=5, distance=100)
-        try:
-            peak_index = peaks_in_data[0][0]
-        except IndexError as no_peak:
-            print(no_peak)
-
-        no_points_around_peak = 200
+        indices_around_peak = self._get_indices_around_peak(self.S21_mag)
 
         # Get the freqs and S21_mag around the peak
-        freqs_around_peak = np.array(self.freqs[(peak_index - no_points_around_peak) : (peak_index + no_points_around_peak)])
-        S21_mag_around_peak = np.array(self.S21_mag[(peak_index - no_points_around_peak) : (peak_index + no_points_around_peak)])
+        freqs_around_peak = self.freqs[indices_around_peak]
+        S21_mag_around_peak = self.S21_mag[indices_around_peak]
 
         # take the freq at the lowest point in the peak
         resonant_freq = freqs_around_peak[S21_mag_around_peak.argmin()]
+
         return resonant_freq
 
     def get_Q_values(self):
@@ -107,21 +163,15 @@ class SonnetCSVOutputFile:
         """
 
         # find the peak in the data
-        peaks_in_data = find_peaks(self.S21_mag, height=5, distance=100)
-        try:
-            peak_index = peaks_in_data[0][0]
-        except IndexError as no_peak:
-            print(no_peak)
-
-        no_points_around_peak = 200
+        indices_around_peak = self._get_indices_around_peak(self.S21_mag)
 
         # Get the freqs and S21_mag around the peak
-        freqs_around_peak = np.array(self.freqs[(peak_index - no_points_around_peak) : (peak_index + no_points_around_peak)])
-        S21_mag_around_peak = np.array(self.S21_mag[(peak_index - no_points_around_peak) : (peak_index + no_points_around_peak)])
+        freqs_around_peak = self.freqs[indices_around_peak]
+        S21_mag_around_peak = self.S21_mag[indices_around_peak]
 
         init_QR_guess = 10e3
         init_QC_guess = 2 * init_QR_guess
-        init_guesses = np.array([self.resonant_freq(), init_QR_guess, init_QC_guess])
+        init_guesses = np.array([self.get_resonant_freq(), init_QR_guess, init_QC_guess])
         popt, pcov = curve_fit(S21_mag_fit, freqs_around_peak, S21_mag_around_peak, p0=init_guesses)
         QR = popt[1]
         QC = popt[2]

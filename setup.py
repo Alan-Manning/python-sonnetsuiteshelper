@@ -68,6 +68,7 @@ setup(
         "numpy",
         "pandas",
         "scipy",
+        "matplotlib",
     ],
     extras_require={
         # eg:
