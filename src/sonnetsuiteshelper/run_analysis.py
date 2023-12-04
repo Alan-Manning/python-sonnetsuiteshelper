@@ -6,7 +6,7 @@ from pandas.core.frame import rewrite_axis_style_signature
 from setuptools._distutils import cmd
 
 
-def Analyze(project_name: str, remote: Dict = {}, param_file: str = ""):
+def analyze(project_name: str, remote: Dict = {}, param_file: str = ""):
     """
     Send a file to the emsolver for analysis. Can be sent locally or to a
     remote solver.
@@ -59,6 +59,7 @@ def Analyze(project_name: str, remote: Dict = {}, param_file: str = ""):
     cmd_output = subprocess.Popen(run_cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
 
     return cmd_output
+
 
 
 
