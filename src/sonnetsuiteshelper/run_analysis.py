@@ -42,9 +42,13 @@ def analyze(project_name: str, remote: Dict = {}, param_file: str = ""):
     if remote:
         keys_needed = ["host", "port"]
         if all(key in remote for key in keys_needed):
-            run_cmd += f" -Server {remote["host"]}:{remote["port"]}"
+            run_cmd += f' -Server {remote["host"]}:{remote["port"]}'
         else:
-            raise(KeyError(f"remote parameter does not contain the keys needed.\nThe keys needed are {keys_needed}.\nCurrent keys are {list(remote.keys())}"))
+            raise (
+                KeyError(
+                    f"remote parameter does not contain the keys needed.\nThe keys needed are {keys_needed}.\nCurrent keys are {list(remote.keys())}"
+                )
+            )
 
     # If this should be run with a parameter file try to add it to the run command
     if param_file:
@@ -59,14 +63,3 @@ def analyze(project_name: str, remote: Dict = {}, param_file: str = ""):
     cmd_output = subprocess.Popen(run_cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
 
     return cmd_output
-
-
-
-
-
-
-
-
-
-
-
