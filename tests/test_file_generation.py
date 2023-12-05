@@ -32,11 +32,11 @@ tests - file_generation.py.
         [X] - make file with linear sweep changed
 """
 
-desired_output_files_path = r"tests\test_files\test_desired_output_files"
-generated_output_file_path = r"tests\test_files\test_output_files"
+desired_output_files_path = r"tests/test_files/test_desired_output_files"
+generated_output_file_path = r"tests/test_files/test_output_files"
 
 base_filename_to_edit = r"general_base_file.son"
-base_file_path_to_edit = r"tests\test_files\test_base_files"
+base_file_path_to_edit = r"tests/test_files/test_base_files"
 
 
 def test_base_file_not_present() -> None:
@@ -69,7 +69,7 @@ def test_output_dir_doesnt_exist() -> None:
     base_filename = base_filename_to_edit
     output_filename = inspect.stack()[0][3]  # current function name
     base_file_path = base_file_path_to_edit
-    output_file_path = generated_output_file_path + r"\new_folder_created"
+    output_file_path = generated_output_file_path + r"/new_folder_created"
     output_filename_prefix = ""
     output_filename_suffix = ""
     params_to_edit = {}

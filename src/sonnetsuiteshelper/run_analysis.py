@@ -2,9 +2,6 @@ import os
 import subprocess
 from typing import Dict
 
-from pandas.core.frame import rewrite_axis_style_signature
-from setuptools._distutils import cmd
-
 
 def analyze(project_name: str, remote: Dict = {}, param_file: str = ""):
     """
