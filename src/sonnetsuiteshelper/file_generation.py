@@ -134,7 +134,7 @@ def generate_file_like(
     # If params dict not empty then change vals
     if params_to_edit:
         for key, val in params_to_edit.items():
-            pattern = re.compile(rf'VALVAR {key} LNG (\w+|"\w+") "Dim. Param."')
+            pattern = re.compile(rf'VALVAR {key} LNG (\w+|"\w+"|\d+\.\d+) "Dim\. Param\."')
 
             if pattern.search(contents):
                 replacement = f'VALVAR {key} LNG {val} "Dim. Param."'
