@@ -16,9 +16,9 @@ class SimpleSingleParamOptimiser:
         batch_1_filename: str,
         batch_1_file_path: str,
         init_variable_param_value: float,
-        desired_output_param:str,
-        desired_output_param_value:float,
-        desired_output_param_value_tolerence_percent:float,
+        desired_output_param: str,
+        desired_output_param_value: float,
+        desired_output_param_value_tolerence_percent: float,
         correlation: str,
         sonnet_mesh_size: float = 1.0,
     ):
@@ -79,15 +79,15 @@ class SimpleSingleParamOptimiser:
         # Check corrent format of arguments
         acceptable_output_param_strings = ["QR", "QC", "QI", "f0", "three_dB_BW"]
         if desired_output_param not in acceptable_output_param_strings:
-            raise(ValueError(f"Cannot optimise for {desired_output_param}. Can only optimise for {acceptable_output_param_strings}"))
+            raise (ValueError(f"Cannot optimise for {desired_output_param}. Can only optimise for {acceptable_output_param_strings}"))
 
         acceptable_correlation_strings = ["+", "-"]
         if correlation not in acceptable_correlation_strings:
-            raise(ValueError(f"Cannot correlate {correlation}. Can only use {acceptable_correlation_strings}"))
+            raise (ValueError(f"Cannot correlate {correlation}. Can only use {acceptable_correlation_strings}"))
 
         # General setup
         self.name = unique_name
-        self.correlation = +1 if correlation=="+" else -1
+        self.correlation = +1 if correlation == "+" else -1
 
         # Variable param setup
         self.variable_param_name = varaible_param_name
@@ -103,15 +103,11 @@ class SimpleSingleParamOptimiser:
         # self.output_file_naming_scheme = output_file_naming_scheme
         self.sonnet_mesh_size = sonnet_mesh_size
 
-
         # Analyse first batch initial simulations
         self.batch_1_filename = batch_1_filename
         self.batch_1_file_path = batch_1_file_path
         self.next_variable_param_value = init_variable_param_value
         self.analyze_batch()
-
-
-
 
     def __str__(self) -> str:
         string = "Simple_single_param_optimiser"
@@ -164,7 +160,7 @@ class SimpleSingleParamOptimiser:
             except Exception as err:
                 raise err
 
-        with open(self.get_cache_filename_and_path(), 'w+') as yaml_file:
+        with open(self.get_cache_filename_and_path(), "w+") as yaml_file:
             yaml.dump(self, yaml_file, default_flow_style=False)
 
         # data_to_cache = {
@@ -241,7 +237,7 @@ class SimpleSingleParamOptimiser:
     def get_last_analysis_file_path(self) -> str:
         """Get the file path of the output file from the last batch that has
         been simulated in sonnet."""
-        analysed_file_path= f"batch_{self.get_next_batch_no()}_outputs"
+        analysed_file_path = f"batch_{self.get_next_batch_no()}_outputs"
         return analysed_file_path
 
     def get_optimised_filename(self) -> str:
@@ -251,19 +247,21 @@ class SimpleSingleParamOptimiser:
             optimised_filename = self.get_last_output_filename()[:-4] + ".csv"
             return optimised_filename
         else:
-            raise(LookupError("Could not get optimised filename. Optimiser has not yet found optimised values."))
+            raise (LookupError("Could not get optimised filename. Optimiser has not yet found optimised values."))
 
     def get_optimised_file_path(self) -> str:
         """Get the file path of the optimised file."""
         if self.last_result_reached_optimisation():
-            optimised_file_path= f"batch_{self.get_current_batch_no()}_outputs"
+            optimised_file_path = f"batch_{self.get_current_batch_no()}_outputs"
             return optimised_file_path
         else:
-            raise(LookupError("Could not get optimised file path. Optimiser has not yet found optimised values."))
+            raise (LookupError("Could not get optimised file path. Optimiser has not yet found optimised values."))
 
     def get_last_output_filename(self) -> str:
         """Get the output filename for the last batch's generated file."""
-        output_filename = f"batch_{self.get_current_batch_no()}__{self.name}_{self.variable_param_name}_{self.variable_param_values[-1]}.son"
+        output_filename = (
+            f"batch_{self.get_current_batch_no()}__{self.name}_{self.variable_param_name}_{self.variable_param_values[-1]}.son"
+        )
         return output_filename
 
     def get_last_output_file_path(self) -> str:
@@ -296,17 +294,16 @@ class SimpleSingleParamOptimiser:
         des = self.desired_output_param_value
         tol = self.desired_output_param_value_tolerence_percent
         outside = False
-        if (last <= des * (1-tol)):
+        if last <= des * (1 - tol):
             outside = True
 
-        if (last >= des * (1+tol)):
+        if last >= des * (1 + tol):
             outside = True
 
         if outside:
             return False
         else:
             return True
-
 
     def round_to_sonnet_mesh_size(self, value) -> float:
         """Round the input value to the nearest sonnet_mesh_size step."""
@@ -383,11 +380,7 @@ class SimpleSingleParamOptimiser:
 
         return self.round_to_sonnet_mesh_size(new_value)
 
-    def generate_next_batch(
-            self,
-            override_variable_param_value: float | None = None,
-            ignore_automatic_stop: bool = False
-        ) -> None:
+    def generate_next_batch(self, override_variable_param_value: float | None = None, ignore_automatic_stop: bool = False) -> None:
         """Generate the next batch of simulation files.
 
         Parameters
@@ -469,18 +462,18 @@ class SimpleSingleParamOptimiser:
                 self.append_new_results_to_self(three_dB_BW)
             case _:
                 print("ERROR")
-                raise(ValueError(f"Error, cannot optimise for {self.desired_output_param}"))
+                raise (ValueError(f"Error, cannot optimise for {self.desired_output_param}"))
 
         self.cache_results()
         return
 
     def plot_optimisation(
-            self,
-            fig_ax: plt.Axes|None = None,
-            plot_fit_function:bool = True,
-            plot_next_batch_variable_value:bool = True,
-            set_axis_labels: bool = True
-        ) -> None:
+        self,
+        fig_ax: plt.Axes | None = None,
+        plot_fit_function: bool = True,
+        plot_next_batch_variable_value: bool = True,
+        set_axis_labels: bool = True,
+    ) -> None:
         """Plot the current results of the optimiser."""
 
         x_data = np.array(self.variable_param_values)
@@ -497,13 +490,22 @@ class SimpleSingleParamOptimiser:
             fig = plt.figure(title)
             rows = 1
             cols = 1
-            grid = plt.GridSpec( rows, cols)
+            grid = plt.GridSpec(rows, cols)
             ax = plt.subplot(grid[0, 0])
         else:
             ax = fig_ax
 
         phi = np.linspace(0, np.pi, len(x_data))
-        rgb_cycle = ( np.stack( ( np.cos(phi), np.cos(phi + 2 * np.pi / 3), np.cos(phi - 2 * np.pi / 3),)).T + 1) * 0.5
+        rgb_cycle = (
+            np.stack(
+                (
+                    np.cos(phi),
+                    np.cos(phi + 2 * np.pi / 3),
+                    np.cos(phi - 2 * np.pi / 3),
+                )
+            ).T
+            + 1
+        ) * 0.5
 
         for i, (x, y) in enumerate(zip(x_data, y_data)):
             ax.scatter(x, y, s=5, color=rgb_cycle[i])
