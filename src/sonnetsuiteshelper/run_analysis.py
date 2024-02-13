@@ -5,18 +5,19 @@ from sys import stdout
 from typing import Dict
 
 
-def analyze_local(project_name:str,
-                  sonnet_install_loc:str,
-                  display_analysis_info_live: bool = False,
-                  lossles: bool = False,
-                  abs_cache_none: bool = False,
-                  abs_cache_stop_restart: bool = False,
-                  abs_cache_multi_sweep: bool = False,
-                  abs_no_discrete: bool = False,
-                  sub_freq_Hz: int | None = None,
-                  param_file: str = ""):
-    """
-    Send a file to the local Sonnet Suites Solver.
+def analyze_local(
+    project_name: str,
+    sonnet_install_loc: str,
+    display_analysis_info_live: bool = False,
+    lossles: bool = False,
+    abs_cache_none: bool = False,
+    abs_cache_stop_restart: bool = False,
+    abs_cache_multi_sweep: bool = False,
+    abs_no_discrete: bool = False,
+    sub_freq_Hz: int | None = None,
+    param_file: str = "",
+):
+    """Send a file to the local Sonnet Suites Solver.
 
     Parameters
     ----------
@@ -28,8 +29,8 @@ def analyze_local(project_name:str,
         This the directory of the sonnet install. This is needed to know the
         location of the em executable to be able to run the analysis.
         This is usually for windows:
-            "C:\Program Files\Sonnet Software\XX.XX"
-        where "XX.XX" is the version number, eg "...\Sonnet Software\17.56".
+            'C:\Program Files\Sonnet Software\XX.XX'
+        where 'XX.XX' is the version number, eg '...\Sonnet Software\17.56'.
 
     See Also
     --------
@@ -40,12 +41,9 @@ def analyze_local(project_name:str,
     -----------
     .. _Sonnet User's Guide:
         https://www.sonnetsoftware.com/support/help-18/users_guide/Sonnet%20User's%20Guide.html?EmCommandLineforBatch.html
-
     """
 
-    em_exec = os.path.join(sonnet_install_loc, "bin\em")
-
-
+    em_exec = os.path.join(sonnet_install_loc, r"bin\em")
 
     # Check the em executable exists for the provided sonnet install loc.
     if not os.path.isfile(em_exec):
@@ -85,18 +83,13 @@ def analyze_local(project_name:str,
     if param_file:
         run_cmd += f" -ParamFile {param_file}"
 
-
-
     cmd_output = subprocess.Popen(run_cmd, shell=True, stdout=subprocess.PIPE.stdout.read())
-
 
     return
 
 
-
 def analyze_remote(project_name: str, remote_host: str, remote_port: str, param_file: str = ""):
-    """
-    Send a file to a remote emsolver server for analysis.
+    """Send a file to a remote emsolver server for analysis.
 
     Parameters
     ----------
@@ -118,29 +111,31 @@ def analyze_remote(project_name: str, remote_host: str, remote_port: str, param_
     param_file: str
         This is a parameter file name for a project. This should include the file
         extention and the path to that file.
-
     """
     run_cmd = ""
 
     # get emclient_path in argument
     emclient_path = r'"C:\Program Files\Sonnet Software\17.56\bin\emclient"'
 
-    if shell = "ps":
+    shell = "TODO"
+
+    if shell == "ps":
         run_cmd += "& "
 
     run_cmd = emclient_path
 
     # If this should be run remote try to add the remote to the run command
-    if remote:
-        keys_needed = ["host", "port"]
-        if all(key in remote for key in keys_needed):
-            run_cmd += f' -Server {remote["host"]}:{remote["port"]}'
-        else:
-            raise (
-                KeyError(
-                    f"remote parameter does not contain the keys needed.\nThe keys needed are {keys_needed}.\nCurrent keys are {list(remote.keys())}"
-                )
-            )
+    # remote = True
+    # if remote:
+    #     keys_needed = ["host", "port"]
+    #     if all(key in remote for key in keys_needed):
+    #         run_cmd += f' -Server {remote["host"]}:{remote["port"]}'
+    #     else:
+    #         raise (
+    #             KeyError(
+    #                 f"remote parameter does not contain the keys needed.\nThe keys needed are {keys_needed}.\nCurrent keys are {list(remote.keys())}"
+    #             )
+    #         )
 
     run_cmd += f" -ProjectName {project_name}"
 
@@ -157,7 +152,3 @@ def analyze_remote(project_name: str, remote_host: str, remote_port: str, param_
     cmd_output = subprocess.Popen(run_cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
 
     return cmd_output
-
-
-
-

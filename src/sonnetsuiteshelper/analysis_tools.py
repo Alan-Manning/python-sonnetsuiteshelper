@@ -9,24 +9,19 @@ from scipy.signal import find_peaks
 
 
 def S21_mag_fit(freqs, f0, qr, qc):
-    """
-    Fit for the S21 mag against frequency
-    """
+    """Fit for the S21 mag against frequency."""
     xr = freqs / f0 - 1
     s21 = 1 - ((qr / qc) * (1 / (1 + 2j * qr * xr)))
     return np.abs(s21)
 
 
 def volts_to_db(S21_volts):
-    """
-    Transforming power S21 volts**2 into decibells
-    """
+    """Transforming power S21 volts**2 into decibells."""
     return 20 * np.log10(S21_volts)
 
 
 class SonnetCSVOutputFile:
-    """
-    csv output object.
+    """Csv output object.
 
     Loads in a csv output generated from a sonnet and provides functions to
     analyse that data.
@@ -44,7 +39,6 @@ class SonnetCSVOutputFile:
 
     complex : str
         the complex type of the csv output file from sonnet. Default is "Real-Imag".
-
     """
 
     def __init__(self, file_name: str, file_path: str = "", parameter: str = "S-Param", complex: str = "Real-Imag"):
@@ -80,10 +74,8 @@ class SonnetCSVOutputFile:
     def __str__(self):
         return f"SonnetCSVOutputFile\n\tname: {self.file_name}\n\tParameter: {self.parameter}\n\tComplex: {self.complex}"
 
-    def _get_indices_around_peak(self, y_data, no_points_around_peak=200):
-        """
-        get the indices around the peak in the data
-        """
+    def _get_indices_around_peak(self, y_data: list, no_points_around_peak: int = 200) -> list:
+        """Get the indices around the peak in the data."""
         peaks_in_data = find_peaks(y_data, height=5, distance=100)
         if len(peaks_in_data[0]) == 0:
             raise (Exception("No Peaks found in data"))
@@ -100,9 +92,10 @@ class SonnetCSVOutputFile:
 
         return indices_around_peak
 
-    def plot_data(self, x_ax: str = "freq_MHz", y_ax: str = "S21_mag_dB", data_points_around_peak: int = 0, fig_ax: plt.Axes = None):
-        """
-        plots the data in the csv, default is plotting all data in the
+    def plot_data(
+        self, x_ax: str = "freq_MHz", y_ax: str = "S21_mag_dB", data_points_around_peak: int = 0, fig_ax: plt.Axes = None
+    ) -> None:
+        """Plots the data in the csv, default is plotting all data in the
         S21_mag_dB against freq. This can take differing x_ax and y_ax values
         to plot. Can also just plot region around the peak in the data by
         passing a data_points_around_peak value.
@@ -127,7 +120,6 @@ class SonnetCSVOutputFile:
             This is a matplotlib axes which, when defined, will be the axes the
             data is plotted to. This allows for customizing the look and adding
             extra data to the plot.
-
         """
 
         x_lookup = {
@@ -191,8 +183,7 @@ class SonnetCSVOutputFile:
         fig.show()
 
     def get_resonant_freq(self) -> float:
-        """
-        Get the resonant frequency (*in Hz*) from the data.
+        """Get the resonant frequency (*in Hz*) from the data.
 
         Returns
         -------
@@ -212,8 +203,7 @@ class SonnetCSVOutputFile:
         return resonant_freq
 
     def get_Q_values(self) -> list:
-        """
-        Get the Q values from the data. Returns a list containing the QR, QC
+        """Get the Q values from the data. Returns a list containing the QR, QC
         and QI values.
 
         Returns
@@ -242,11 +232,6 @@ class SonnetCSVOutputFile:
         return Q_Values
 
     def get_three_dB_BW(self) -> float:
-        """
-        get the 3dB BW from the peak in the data
-
-        """
+        """Get the 3dB BW from the peak in the data."""
         spline = UnivariateSpline(self.freqs, volts_to_db(self.S21_mag) + 3.0, s=0)
         return abs(spline.roots()[1] - spline.roots()[0])
-
-

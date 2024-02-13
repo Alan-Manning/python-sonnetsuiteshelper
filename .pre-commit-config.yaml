@@ -11,11 +11,11 @@ repos:
   #     - id: ruff
   #       args: [--fix, --exit-non-zero-on-fix, --show-fixes]
   - repo: https://github.com/psf/black
-    rev: main
+    rev: 24.2.0
     hooks:
       - id: black
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: main
+    rev: v4.5.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer

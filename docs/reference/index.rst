@@ -9,3 +9,4 @@ API Reference
     file_generation
     analysis
     run_analysis
+    itteration_tools
