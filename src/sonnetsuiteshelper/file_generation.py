@@ -111,7 +111,7 @@ def generate_file_like(
 
     # check base_file exists
     if not os.path.isfile(base_file):
-        raise FileNotFoundError
+        raise FileNotFoundError(f"Unable to find file: {base_file}")
 
     # check output_directory exists and if not try to create it.
     if not os.path.isdir(output_file_path):

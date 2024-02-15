@@ -13,8 +13,10 @@ class SimpleSingleParamOptimiser:
         self,
         unique_name: str,
         varaible_param_name: str,
-        batch_1_filename: str,
-        batch_1_file_path: str,
+        batch_1_son_filename: str,
+        batch_1_son_file_path: str,
+        batch_1_output_filename: str,
+        batch_1_output_file_path: str,
         init_variable_param_value: float,
         desired_output_param: str,
         desired_output_param_value: float,
@@ -34,13 +36,25 @@ class SimpleSingleParamOptimiser:
             The name of the parameter that should be varied by the optimiser
             to achieve the desired result.
 
-        batch_1_filename: str
-            The name of the first file which is the starting point for the
-            optimiser.
+        batch_1_son_filename: str
+            The name of the first sonnet file which is the starting point for
+            the optimiser. e.g. "son_sim_V1.son"
 
-        batch_1_file_path: str
-            The file path of the first file which is the starting point for
-            the optimiser.
+        batch_1_son_file_path: str
+            The file path of the first sonnet file which is the starting point
+            for the optimiser. e.g. if the folder structure looks like this:
+            "batch_1_son_files/son_sim_V1.son", then the path is "batch_1_son_files".
+
+        batch_1_output_filename: str
+            The name of the first output file from a simulation which is the
+            starting point for the optimiser. e.g. "son_sim_V1.csv".
+            Often this is the same name as the initial son file.
+
+        batch_1_output_file_path: str
+            The file path of the first output file which is the starting point for
+            the optimiser. e.g. if the folder structure looks like this:
+            "batch_1_out/son_sim_V1.csv", then the path is "batch_1_out".
+            Often this is the same path as the son file path.
 
         desired_output_param : str
             The variable output the optimiser should be optimising for. e.g.
@@ -79,12 +93,19 @@ class SimpleSingleParamOptimiser:
         # Check corrent format of arguments
         acceptable_output_param_strings = ["QR", "QC", "QI", "f0", "three_dB_BW"]
         if desired_output_param not in acceptable_output_param_strings:
-            raise (ValueError(f"Cannot optimise for {desired_output_param}. Can only optimise for {acceptable_output_param_strings}"))
+            raise ValueError(f"Cannot optimise for {desired_output_param}. Can only optimise for {acceptable_output_param_strings}")
 
         acceptable_correlation_strings = ["+", "-"]
         if correlation not in acceptable_correlation_strings:
-            raise (ValueError(f"Cannot correlate {correlation}. Can only use {acceptable_correlation_strings}"))
+            raise ValueError(f"Cannot correlate {correlation}. Can only use {acceptable_correlation_strings}")
 
+        if batch_1_son_filename[-4:] != ".son":
+            raise ValueError(f"batch_1_son_filename should be a sonnet file. This means it should contain a '.son' file extention.")
+
+        if batch_1_output_filename[-4:] != ".csv":
+            raise ValueError(
+                f"batch_1_output_filename should be a csv output file from a simulation. This means it should contain a '.csv' file extention."
+            )
         # General setup
         self.name = unique_name
         self.correlation = +1 if correlation == "+" else -1
@@ -100,14 +121,18 @@ class SimpleSingleParamOptimiser:
         self.desired_output_param_values = []
 
         # File settings
-        # self.output_file_naming_scheme = output_file_naming_scheme
         self.sonnet_mesh_size = sonnet_mesh_size
 
         # Analyse first batch initial simulations
-        self.batch_1_filename = batch_1_filename
-        self.batch_1_file_path = batch_1_file_path
+        self.batch_1_son_filename = batch_1_son_filename
+        self.batch_1_son_file_path = batch_1_son_file_path
+
+        self.batch_1_output_filename = batch_1_output_filename
+        self.batch_1_output_file_path = batch_1_output_file_path
+
         self.next_variable_param_value = init_variable_param_value
         self.analyze_batch()
+        self.generate_next_batch()
 
     def __str__(self) -> str:
         string = "Simple_single_param_optimiser"
@@ -121,16 +146,18 @@ class SimpleSingleParamOptimiser:
         """Get the state of the object for pyyaml."""
         return dict(
             name=self.name,
-            # correlation=self.correlation,
-            # variable_param_name=self.variable_param_name,
+            correlation=self.correlation,
+            variable_param_name=self.variable_param_name,
             variable_param_values=self.variable_param_values,
-            # desired_output_param=self.desired_output_param,
-            # desired_output_param_value=self.desired_output_param_value,
-            # desired_output_param_value_tolerence_percent=self.desired_output_param_value_tolerence_percent,
+            desired_output_param=self.desired_output_param,
+            desired_output_param_value=self.desired_output_param_value,
+            desired_output_param_value_tolerence_percent=self.desired_output_param_value_tolerence_percent,
             desired_output_param_values=self.desired_output_param_values,
             sonnet_mesh_size=self.sonnet_mesh_size,
-            # batch_1_filename=self.batch_1_filename,
-            # batch_1_file_path=self.batch_1_file_path
+            batch_1_son_filename=self.batch_1_son_filename,
+            batch_1_son_file_path=self.batch_1_son_file_path,
+            batch_1_output_filename=self.batch_1_output_filename,
+            batch_1_output_file_path=self.batch_1_output_file_path,
         )
 
     def get_cache_filename_and_path(self) -> str:
@@ -163,23 +190,6 @@ class SimpleSingleParamOptimiser:
         with open(self.get_cache_filename_and_path(), "w+") as yaml_file:
             yaml.dump(self, yaml_file, default_flow_style=False)
 
-        # data_to_cache = {
-        #     "name":self.name,
-        #     "correlation":self.correlation,
-        #     "variable_param_name":self.variable_param_name,
-        #     "variable_param_values":str(self.variable_param_values),
-        #     "desired_output_param":self.desired_output_param,
-        #     "desired_output_param_value":self.desired_output_param_value,
-        #     "desired_output_param_value_tolerence_percent":self.desired_output_param_value_tolerence_percent,
-        #     "desired_output_param_values":self.desired_output_param_values,
-        #     "sonnet_mesh_size":self.sonnet_mesh_size,
-        #     "batch_1_filename":self.batch_1_filename,
-        #     "batch_1_file_path":self.batch_1_file_path,
-        # }
-
-        # with open(self.get_cache_filename_and_path(), 'w+') as yaml_file:
-        #     yaml.dump(data_to_cache, yaml_file, default_flow_style=False)
-
         return
 
     def get_cached_results(self) -> None:
@@ -199,8 +209,10 @@ class SimpleSingleParamOptimiser:
                 self.desired_output_param_value_tolerence_percent = cached_data["desired_output_param_value_tolerence_percent"]
                 self.desired_output_param_values = cached_data["desired_output_param_values"]
                 self.sonnet_mesh_size = cached_data["sonnet_mesh_size"]
-                self.batch_1_filename = cached_data["batch_1_filename"]
-                self.batch_1_file_path = cached_data["batch_1_file_path"]
+                self.batch_1_son_filename = cached_data["batch_1_son_filename"]
+                self.batch_1_son_file_path = cached_data["batch_1_son_file_path"]
+                self.batch_1_output_filename = cached_data["batch_1_output_filename"]
+                self.batch_1_output_file_path = cached_data["batch_1_output_file_path"]
             except Exception as e:
                 print("Error loading cache")
                 raise e
@@ -259,14 +271,20 @@ class SimpleSingleParamOptimiser:
 
     def get_last_output_filename(self) -> str:
         """Get the output filename for the last batch's generated file."""
-        output_filename = (
-            f"batch_{self.get_current_batch_no()}__{self.name}_{self.variable_param_name}_{self.variable_param_values[-1]}.son"
-        )
+        if self.get_current_batch_no() == 1:
+            output_filename = self.batch_1_son_filename
+        else:
+            output_filename = (
+                f"batch_{self.get_current_batch_no()}__{self.name}_{self.variable_param_name}_{self.variable_param_values[-1]}.son"
+            )
         return output_filename
 
     def get_last_output_file_path(self) -> str:
         """Get the output filepath for the next batch's generated file."""
-        output_filepath = f"batch_{self.get_current_batch_no()}_generated_files"
+        if self.get_current_batch_no() == 1:
+            output_filepath = self.batch_1_son_file_path
+        else:
+            output_filepath = f"batch_{self.get_current_batch_no()}_generated_files"
         return output_filepath
 
     def get_last_desired_output_param_value(self) -> float:
@@ -437,9 +455,8 @@ class SimpleSingleParamOptimiser:
         """Analyze the current batch of simulations that have been run."""
         if self.get_current_batch_no() == 0:
             # special case for first batch
-            son_csv = analysis_tools.SonnetCSVOutputFile(self.batch_1_filename, file_path=self.batch_1_file_path)
+            son_csv = analysis_tools.SonnetCSVOutputFile(self.batch_1_output_filename, file_path=self.batch_1_output_file_path)
         else:
-
             filename = self.get_last_analysis_filename()
             file_path = self.get_last_analysis_file_path()
 
