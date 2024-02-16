@@ -9,6 +9,113 @@ from . import analysis_tools, file_generation
 
 
 class SimpleSingleParamOptimiser:
+    """Optimiser for Sonnet files.
+
+    This takes in an initial .son file and .csv output from running
+    that sonnet file and will try to optimise that file for a specific value
+    within some defined tolerance.
+
+    Attributes
+    ----------
+    name : str
+        The unique name of this optimisation used for file generation. If
+        this conflicts with another optimisers name then there will be
+        files overwriting eachother.
+
+    batch_1_son_filename : str
+        The name of the first sonnet file which is the starting point for
+        the optimiser. e.g. "son_sim_V1.son"
+
+    batch_1_son_file_path : str
+        The file path of the first sonnet file which is the starting point
+        for the optimiser. e.g. if the folder structure looks like this:
+        "batch_1_son_files/son_sim_V1.son", then the path is "batch_1_son_files".
+
+    batch_1_output_filename : str
+        The name of the first output file from a simulation which is the
+        starting point for the optimiser. e.g. "son_sim_V1.csv". Often this is
+        the same name as the initial son file.
+
+    batch_1_output_file_path : str
+        The file path of the first output file which is the starting point for
+        the optimiser. e.g. if the folder structure looks like this:
+        "batch_1_out/son_sim_V1.csv", then the path is "batch_1_out".
+        Often this is the same path as the son file path.
+
+    correlation : int
+        The correlation between the variable parameter and the desired
+        output param. This accepts str values "+" or "-".
+            If an increase in the variable_param_value results in an
+            increase in the desired_output_param, then this should be "+".
+            If an increase in the variable_param_value results in a
+            decrease in the desired_output_param, Then this should be "-".
+
+    desired_output_param : str
+        The variable output the optimiser should be optimising for. e.g.
+        if trying to get a resonant frequency of 2GHz, then this argument
+        will be ' desired_output_param="f0" '.
+        This will only take values of:
+        {"QR", "QC", "QI", "f0", "three_dB_BW"}.
+
+    desired_output_param_value : str
+        The value of the desired_output_param. e.g. if trying to
+        resonant frequency of 2GHz, then this argument will be
+        'desired_output_param_value=2.0e9'.
+
+    desired_output_param_value_tolerence_percent : float
+        This is the percentage tolerance around the desired_output_param_value.
+        eg. if trying to get resonant frequency of 2GHz +- 1%, then this
+        argument will be 'desired_output_param_value_tolerence_percent = 0.01'.
+
+    desired_output_param_values : list
+        This is a list of the desired ouptut parameter values from the optimser.
+
+    sonnet_mesh_size : float
+        Default=1.0. The mesh size in sonnet. This is the smallest change
+        possible in the varaible parameter that will result in a different
+        file being produced.
+
+    next_variable_param_value : float
+        This is a the next variable parameter value to be used in the optimser.
+
+    variable_param_name : str
+        The name of the parameter that should be varied by the optimiser
+        to achieve the desired result.
+
+    variable_param_values : list
+        This is a list of the variable parameter values used in the optimser.
+
+    Methods
+    -------
+    analyze_batch()
+    append_new_results_to_self()
+    cache_results()
+    change_variable_param_value_by_mesh_step()
+    generate_next_batch()
+    get_cache_file_path()
+    get_cache_filename()
+    get_cache_filename_and_path()
+    get_cached_results()
+    get_current_batch_no()
+    get_last_analysis_file_path()
+    get_last_analysis_filename()
+    get_last_desired_output_param_value()
+    get_last_output_file_path()
+    get_last_output_filename()
+    get_last_variable_param_value()
+    get_next_batch_no()
+    get_next_output_file_path()
+    get_next_output_filename()
+    get_next_variable_param_value()
+    get_next_variable_param_value_from_lin_fit()
+    get_next_variable_param_value_from_percent_scale()
+    get_optimised_file_path()
+    get_optimised_filename()
+    last_result_reached_optimisation()
+    plot_optimisation()
+    round_to_sonnet_mesh_size()
+    """
+
     def __init__(
         self,
         unique_name: str,

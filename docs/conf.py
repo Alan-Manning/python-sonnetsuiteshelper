@@ -39,8 +39,26 @@ html_sidebars = {
 }
 html_short_title = f"{project}-{version}"
 
-napoleon_use_ivar = True
-napoleon_use_rtype = True
-napoleon_use_param = False
+autodoc_default_options = {
+    'members': None, 'undoc-members': None,
+    'private-members': None, 'show-inheritance': None
+}
+
 napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = False
+napoleon_use_ivar = False
+napoleon_use_param = True
+napoleon_use_rtype = False
+napoleon_preprocess_types = True
+napoleon_type_aliases = True
 napoleon_custom_sections = [("KwArgs", "Keyword Arguments")]
+
+# old
+# napoleon_numpy_docstring = True
+# # napoleon_include_init_with_doc = True
+# napoleon_use_ivar = True
+# napoleon_use_param = False
+# napoleon_use_rtype = True
+# # napoleon_preprocess_types = False
+# # napoleon_type_aliases = True
+# napoleon_custom_sections = [("KwArgs", "Keyword Arguments")]

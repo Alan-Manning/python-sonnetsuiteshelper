@@ -15,10 +15,9 @@ def generate_file_like(
     adaptive_sweeps_to_edit: Dict = {},
     linear_sweeps_to_edit: Dict = {},
 ) -> None:
-    """
-    This generates a Sonnet file like the base file specified. This will take in
-    a series of values or other elements to further modify the Sonnet file to be
-    produced.
+    """This generates a Sonnet file like the base file specified. This will
+    take in a series of values or other elements to further modify the Sonnet
+    file to be produced.
 
     Parameters
     ----------
@@ -30,9 +29,8 @@ def generate_file_like(
 
     output_filename : str
         This is the name for the output file to be generated. If this does not
-        have a ".son" file extention already, one will be added.
-        (**WARNING** If a file with this name already exists then its contents
-        will be overwritten!)
+        have a ".son" file extention already, one will be added. If a file with
+        this name already exists then its contents will be overwritten.
 
     KwArgs
     ------
@@ -100,6 +98,10 @@ def generate_file_like(
                 "step_size" : 0.1,
             }
 
+    Warnings
+    --------
+    If a file with this name already exists then its contents will be
+    overwritten!
     """
 
     # if the basefile has no .son file extention add it.
