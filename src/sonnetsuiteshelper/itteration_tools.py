@@ -45,10 +45,10 @@ class SimpleSingleParamOptimiser:
     correlation : int
         The correlation between the variable parameter and the desired
         output param. This accepts str values "+" or "-".
-            If an increase in the variable_param_value results in an
-            increase in the desired_output_param, then this should be "+".
-            If an increase in the variable_param_value results in a
-            decrease in the desired_output_param, Then this should be "-".
+        If an increase in the variable_param_value results in an increase in the
+        desired_output_param, then this should be "+".
+        If an increase in the variable_param_value results in a decrease in the
+        desired_output_param, Then this should be "-".
 
     desired_output_param : str
         The variable output the optimiser should be optimising for. e.g.
@@ -84,36 +84,6 @@ class SimpleSingleParamOptimiser:
 
     variable_param_values : list
         This is a list of the variable parameter values used in the optimser.
-
-    Methods
-    -------
-    analyze_batch()
-    append_new_results_to_self()
-    cache_results()
-    change_variable_param_value_by_mesh_step()
-    generate_next_batch()
-    get_cache_file_path()
-    get_cache_filename()
-    get_cache_filename_and_path()
-    get_cached_results()
-    get_current_batch_no()
-    get_last_analysis_file_path()
-    get_last_analysis_filename()
-    get_last_desired_output_param_value()
-    get_last_output_file_path()
-    get_last_output_filename()
-    get_last_variable_param_value()
-    get_next_batch_no()
-    get_next_output_file_path()
-    get_next_output_filename()
-    get_next_variable_param_value()
-    get_next_variable_param_value_from_lin_fit()
-    get_next_variable_param_value_from_percent_scale()
-    get_optimised_file_path()
-    get_optimised_filename()
-    last_result_reached_optimisation()
-    plot_optimisation()
-    round_to_sonnet_mesh_size()
     """
 
     def __init__(
@@ -183,10 +153,10 @@ class SimpleSingleParamOptimiser:
         correlation: str
             The correlation between the variable parameter and the desired
             output param. This accepts str values "+" or "-".
-                If an increase in the variable_param_value results in an
-                increase in the desired_output_param, then this should be "+".
-                If an increase in the variable_param_value results in a
-                decrease in the desired_output_param, Then this should be "-".
+            If an increase in the variable_param_value results in an increase
+            in the desired_output_param, then this should be "+".
+            If an increase in the variable_param_value results in a decrease
+            in the desired_output_param, Then this should be "-".
 
         sonnet_mesh_size : float or int
             Default=1.0. The mesh size in sonnet. This is the smallest change

@@ -57,11 +57,11 @@ def generate_file_like(
         then this will print an error and continue with the other parameter
         values. An example dict to be passed would take the form:
         >>> Params_to_edit = {
-                "Length_var_1" : 400,
-                "Length_var_2" : 250,
-                "Length_var_3" : 1975,
-                ...
-            }
+        ...     "Length_var_1" : 400,
+        ...     "Length_var_2" : 250,
+        ...     "Length_var_3" : 1975,
+        ...     ...
+        ... }
 
     general_metals_to_edit : dict
         This is a dictionary that has keys of general metal names and values of
@@ -73,30 +73,30 @@ def generate_file_like(
         print an error and continue with the other metals if there exist any.
         An example dict to be passed would take the form:
         >>> gen_mets_edits = {
-                "gen_met_1": {"Rdc": 0.5, "Rrf": 0.6, "Xdc": 0.7, "Ls": 0.8},
-                "gen_met_2": {"Rdc": 1e-08, "Rrf": 14e-8, "Xdc": 0, "Ls": 0.003},
-                ...
-            }
+        ...     "gen_met_1": {"Rdc": 0.5, "Rrf": 0.6, "Xdc": 0.7, "Ls": 0.8},
+        ...     "gen_met_2": {"Rdc": 1e-08, "Rrf": 14e-8, "Xdc": 0, "Ls": 0.003},
+        ...     ...
+        ... }
 
     adaptive_sweeps_to_edit : dict
         This is a dictionary that has keys of "sweep_min", "sweep_max",
         "target_freqs" and values of the values for those keys.
         An example dict to be passed would take the form:
         >>> adaptive_sweep = {
-                "sweep_min" : 1.0,
-                "sweep_max" : 5.0,
-                "target_freqs" : 500,
-            }
+        ...     "sweep_min" : 1.0,
+        ...     "sweep_max" : 5.0,
+        ...     "target_freqs" : 500,
+        ... }
 
     linear_sweeps_to_edit : dict
         This is a dictionary that has keys of "sweep_min", "sweep_max",
         "step_size" and values of the values for those keys.
         An example dict to be passed would take the form:
         >>> linear_sweep = {
-                "sweep_min" : 1.0,
-                "sweep_max" : 5.0,
-                "step_size" : 0.1,
-            }
+        ...     "sweep_min" : 1.0,
+        ...     "sweep_max" : 5.0,
+        ...     "step_size" : 0.1,
+        ... }
 
     Warnings
     --------

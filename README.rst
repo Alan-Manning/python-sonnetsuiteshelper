@@ -13,7 +13,7 @@ Overview
       - | |github-actions|
         | |codecov|
     * - package
-      - | |version| |wheel| |supported-versions| |supported-implementations|
+      - | |wheel| |supported-versions| |supported-implementations|
         | |commits-since|
 .. |docs| image:: https://readthedocs.org/projects/python-sonnetsuiteshelper/badge/?style=flat
     :target: https://python-sonnetsuiteshelper.readthedocs.io/
@@ -26,10 +26,6 @@ Overview
 .. |codecov| image:: https://codecov.io/gh/Alan-Manning/python-sonnetsuiteshelper/branch/main/graphs/badge.svg?branch=main
     :alt: Coverage Status
     :target: https://app.codecov.io/github/Alan-Manning/python-sonnetsuiteshelper
-
-.. |version| image:: https://img.shields.io/pypi/v/sonnetsuiteshelper.svg
-    :alt: PyPI Package latest release
-    :target: https://pypi.org/project/sonnetsuiteshelper
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/sonnetsuiteshelper.svg
     :alt: PyPI Wheel
@@ -51,7 +47,7 @@ Overview
 
 .. end-badges
 
-sonnetsuiteshelper is a package designed to help with editing and analysing Sonnet Suites files.
+sonnetsuiteshelper is a package designed to help with editing and analysing `Sonnet Suites <https://www.sonnetsoftware.com/products/sonnet-suites/>`_ files.
 
 * Free software: GNU Lesser General Public License v3 or later (LGPLv3+)
 

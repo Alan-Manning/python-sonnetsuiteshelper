@@ -23,14 +23,38 @@ def analyze_local(
     ----------
     project_name : str
         The name of the sonnet file to be analyzed. If this does not include
-        the .son file extention then it will be added.
+        the ".son" file extention then it will be added.
 
     sonnet_install_loc : str
         This the directory of the sonnet install. This is needed to know the
         location of the em executable to be able to run the analysis.
         This is usually for windows:
-            'C:\Program Files\Sonnet Software\XX.XX'
-        where 'XX.XX' is the version number, eg '...\Sonnet Software\17.56'.
+        >>> C:/Program Files/Sonnet Software/XX.XX
+        where 'XX.XX' is the version number, e.g. ".../Sonnet Software/17.56".
+
+    display_analysis_info_live: bool
+        Whether to display live analysis info in the terminal.
+
+    lossles : bool
+        Default False
+
+    abs_cache_none : bool
+        Default False,
+
+    abs_cache_stop_restart: bool = False,
+        Default False
+
+    abs_cache_multi_sweep: bool = False,
+        Default False
+
+    abs_no_discrete: bool = False,
+        Default False
+
+    sub_freq_Hz: int | None = None,
+        Default None
+
+    param_file: str = "",
+        Default is blank str
 
     See Also
     --------
@@ -97,20 +121,17 @@ def analyze_remote(project_name: str, remote_host: str, remote_port: str, param_
         This is the name of the sonnet file to be analyzed. If this does not
         include the .son file extention it will be added.
 
-    remote_host: str
-        This is the host name for the remote solverand the port number for the remote host.
-        eg.
-        >>> remote_solver = {
-                "host" : 10.1.10.30,
-                "port" : ""
-            }
+    remote_host : str
+        This is the host name for the remote solver. e.g. "10.1.10.30"
+
+    remote_port : str
+        This is the port to be used to connect to the remote solver. e.g. "56150"
 
     KwArgs
     ------
-
     param_file: str
-        This is a parameter file name for a project. This should include the file
-        extention and the path to that file.
+        This is a parameter file name for a project. This should include the
+        path for the file and the file extention.
     """
     run_cmd = ""
 
