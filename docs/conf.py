@@ -14,7 +14,7 @@ extensions = [
 source_suffix = ".rst"
 master_doc = "index"
 project = "sonnetsuiteshelper"
-year = "2023"
+year = "2024"
 author = "Alan Manning"
 copyright = f"{year}, {author}"
 version = release = "0.4.5"

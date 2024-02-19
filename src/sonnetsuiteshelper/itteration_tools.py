@@ -1,4 +1,3 @@
-import copy
 import os
 
 import numpy as np
@@ -70,6 +69,10 @@ class SimpleSingleParamOptimiser:
     desired_output_param_values : list
         This is a list of the desired ouptut parameter values from the optimser.
 
+    loaded_cache : bool
+        This is a bool that shows whether a cache file has been used to laod
+        values.
+
     sonnet_mesh_size : float
         Default=1.0. The mesh size in sonnet. This is the smallest change
         possible in the varaible parameter that will result in a different
@@ -100,6 +103,7 @@ class SimpleSingleParamOptimiser:
         desired_output_param_value_tolerence_percent: float,
         correlation: str,
         sonnet_mesh_size: float = 1.0,
+        ignore_loading_cache: bool = False,
     ):
         """
         Parameters
@@ -163,8 +167,11 @@ class SimpleSingleParamOptimiser:
             possible in the varaible parameter that will result in a different
             file being produced.
 
-        note these values are ints because the grid mesh size in sonnet is 1um
-        so cant analyze anything other than ints.
+        ignore_loading_cache : bool
+            Default=False. When True the optimser will not try to load cached
+            results into memory. Otherwise by default the optimser will try to
+            load values from a cache file in the OptCache path.
+
         """
 
         # Check corrent format of arguments
@@ -185,17 +192,27 @@ class SimpleSingleParamOptimiser:
             )
         # General setup
         self.name = unique_name
+
+        # Check for an existing cache file if ignore_loading_cache is False
+        if not ignore_loading_cache:
+            self.load_cached_results()
+        else:
+            self.loaded_cache = False
+
+        if self.loaded_cache:
+            return
+
         self.correlation = +1 if correlation == "+" else -1
 
         # Variable param setup
         self.variable_param_name = varaible_param_name
-        self.variable_param_values = []
+        self.variable_param_values: list[float] = []
 
         # Desired param setup
         self.desired_output_param = desired_output_param
         self.desired_output_param_value = desired_output_param_value
         self.desired_output_param_value_tolerence_percent = desired_output_param_value_tolerence_percent
-        self.desired_output_param_values = []
+        self.desired_output_param_values: list[float] = []
 
         # File settings
         self.sonnet_mesh_size = sonnet_mesh_size
@@ -219,9 +236,10 @@ class SimpleSingleParamOptimiser:
         string += f"\n\tdesired_output_param_value: {self.desired_output_param_value}"
         return string
 
-    def __getstate__(self) -> str:
-        """Get the state of the object for pyyaml."""
-        return dict(
+    def _create_yaml_str(self) -> str:
+        """Create a yaml formated string containing all the relevant instance
+        variables."""
+        state = dict(
             name=self.name,
             correlation=self.correlation,
             variable_param_name=self.variable_param_name,
@@ -230,12 +248,22 @@ class SimpleSingleParamOptimiser:
             desired_output_param_value=self.desired_output_param_value,
             desired_output_param_value_tolerence_percent=self.desired_output_param_value_tolerence_percent,
             desired_output_param_values=self.desired_output_param_values,
+            next_variable_param_value=self.next_variable_param_value,
             sonnet_mesh_size=self.sonnet_mesh_size,
             batch_1_son_filename=self.batch_1_son_filename,
             batch_1_son_file_path=self.batch_1_son_file_path,
             batch_1_output_filename=self.batch_1_output_filename,
             batch_1_output_file_path=self.batch_1_output_file_path,
         )
+
+        state_str = "---\n"
+        for key, val in state.items():
+            if isinstance(val, str):
+                state_str = state_str + f"{key}: '{val}'\n"
+            else:
+                state_str = state_str + f"{key}: {val}\n"
+
+        return state_str
 
     def get_cache_filename_and_path(self) -> str:
         """Get the filename and file path for the optimiser cache file."""
@@ -264,35 +292,45 @@ class SimpleSingleParamOptimiser:
             except Exception as err:
                 raise err
 
+        yaml_str = self._create_yaml_str()
         with open(self.get_cache_filename_and_path(), "w+") as yaml_file:
-            yaml.dump(self, yaml_file, default_flow_style=False)
+            yaml_file.write(yaml_str)
 
         return
 
-    def get_cached_results(self) -> None:
-        """Get cached results of the optimiser so far if a cache file
+    def load_cached_results(self) -> None:
+        """Load cached results of the optimiser so far if a cache file
         exists."""
 
         cache_file = self.get_cache_filename_and_path()
-        if os.path.isfile(cache_file):
-            try:
-                cached_data = yaml.safe_load(cache_file)
-                self.name = cached_data["name"]
-                self.correlation = cached_data["correlation"]
-                self.variable_param_name = cached_data["variable_param_name"]
-                self.variable_param_values = cached_data["variable_param_values"]
-                self.desired_output_param = cached_data["desired_output_param"]
-                self.desired_output_param_value = cached_data["desired_output_param_value"]
-                self.desired_output_param_value_tolerence_percent = cached_data["desired_output_param_value_tolerence_percent"]
-                self.desired_output_param_values = cached_data["desired_output_param_values"]
-                self.sonnet_mesh_size = cached_data["sonnet_mesh_size"]
-                self.batch_1_son_filename = cached_data["batch_1_son_filename"]
-                self.batch_1_son_file_path = cached_data["batch_1_son_file_path"]
-                self.batch_1_output_filename = cached_data["batch_1_output_filename"]
-                self.batch_1_output_file_path = cached_data["batch_1_output_file_path"]
-            except Exception as e:
-                print("Error loading cache")
-                raise e
+
+        if not os.path.isfile(cache_file):
+            self.loaded_cache = False
+            return
+
+        try:
+            with open(cache_file, "r") as stream:
+                cached_data = yaml.safe_load(stream)
+
+            self.name = cached_data.get("name")
+            self.correlation = cached_data.get("correlation")
+            self.variable_param_name = cached_data.get("variable_param_name")
+            self.variable_param_values = cached_data.get("variable_param_values")
+            self.desired_output_param = cached_data.get("desired_output_param")
+            self.desired_output_param_value = cached_data.get("desired_output_param_value")
+            self.desired_output_param_value_tolerence_percent = cached_data.get("desired_output_param_value_tolerence_percent")
+            self.desired_output_param_values = cached_data.get("desired_output_param_values")
+            self.next_variable_param_value = cached_data.get("next_variable_param_value")
+            self.sonnet_mesh_size = cached_data.get("sonnet_mesh_size")
+            self.batch_1_son_filename = cached_data.get("batch_1_son_filename")
+            self.batch_1_son_file_path = cached_data.get("batch_1_son_file_path")
+            self.batch_1_output_filename = cached_data.get("batch_1_output_filename")
+            self.batch_1_output_file_path = cached_data.get("batch_1_output_file_path")
+
+            self.loaded_cache = True
+        except Exception as e:
+            print("Error loading cache")
+            raise e
 
         return
 
@@ -526,6 +564,8 @@ class SimpleSingleParamOptimiser:
             output_file_path=output_file_path,
             params_to_edit=params_to_edit_dict,
         )
+
+        self.cache_results()
         return
 
     def analyze_batch(self) -> None:
@@ -558,7 +598,6 @@ class SimpleSingleParamOptimiser:
                 print("ERROR")
                 raise (ValueError(f"Error, cannot optimise for {self.desired_output_param}"))
 
-        self.cache_results()
         return
 
     def plot_optimisation(
