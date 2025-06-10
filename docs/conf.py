@@ -17,7 +17,7 @@ project = "sonnetsuiteshelper"
 year = "2024"
 author = "Alan Manning"
 copyright = f"{year}, {author}"
-version = release = "1.0.6"
+version = release = "1.0.7"
 
 pygments_style = "trac"
 templates_path = ["."]
