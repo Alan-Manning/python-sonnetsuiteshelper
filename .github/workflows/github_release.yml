@@ -8,7 +8,7 @@ on:
 
 jobs:
   github-release:
-    name: >-
+    name: Sign the Python distribution with Sigstore and upload them to GitHub Release
       Sign the Python distribution with Sigstore
       and upload them to GitHub Release
     runs-on: ubuntu-latest
