@@ -1,8 +1,9 @@
 ---
 name: Publish GitHub Release
 on:
-  release:
-    types: [created]
+  workflow_run:
+    workflows: [Build]
+    types: [completed]
 jobs:
   github-release:
     name: Sign the Python distribution with Sigstore and upload them to GitHub Release
