@@ -137,18 +137,18 @@ The file structure after this has been run looks like: ::
     │   └── V1__file_(5)_len_1975.0.csv
     ├── batch_2_generated_files
     │   ├── batch_2__0_1100.0_length_var_1150.0.son
-    │   ├── batch_2__0_1275.0_length_var_1325.0.son
-    │   ├── batch_2__0_1450.0_length_var_1500.0.son
-    │   ├── batch_2__0_1625.0_length_var_1675.0.son
-    │   ├── batch_2__0_1800.0_length_var_1850.0.son
-    │   └── batch_2__0_1975.0_length_var_2025.0.son
+    │   ├── batch_2__1_1275.0_length_var_1325.0.son
+    │   ├── batch_2__2_1450.0_length_var_1500.0.son
+    │   ├── batch_2__3_1625.0_length_var_1675.0.son
+    │   ├── batch_2__4_1800.0_length_var_1850.0.son
+    │   └── batch_2__5_1975.0_length_var_2025.0.son
     ├── OptCache
     │   ├── SSPOC_0_1100.0.yml
-    │   ├── SSPOC_0_1275.0.yml
-    │   ├── SSPOC_0_1450.0.yml
-    │   ├── SSPOC_0_1625.0.yml
-    │   ├── SSPOC_0_1800.0.yml
-    │   └── SSPOC_0_1975.0.yml
+    │   ├── SSPOC_1_1275.0.yml
+    │   ├── SSPOC_2_1450.0.yml
+    │   ├── SSPOC_3_1625.0.yml
+    │   ├── SSPOC_4_1800.0.yml
+    │   └── SSPOC_5_1975.0.yml
     └── example.py
 
 Itterating using SimpleSingleParamOptimiser
@@ -206,32 +206,32 @@ The file structure after this has been run looks like: ::
     │   └── V1__file_(5)_len_1975.0.csv
     ├── batch_2_generated_files
     │   ├── batch_2__0_1100.0_length_var_1150.0.son
-    │   ├── batch_2__0_1275.0_length_var_1325.0.son
-    │   ├── batch_2__0_1450.0_length_var_1500.0.son
-    │   ├── batch_2__0_1625.0_length_var_1675.0.son
-    │   ├── batch_2__0_1800.0_length_var_1850.0.son
-    │   └── batch_2__0_1975.0_length_var_2025.0.son
+    │   ├── batch_2__1_1275.0_length_var_1325.0.son
+    │   ├── batch_2__2_1450.0_length_var_1500.0.son
+    │   ├── batch_2__3_1625.0_length_var_1675.0.son
+    │   ├── batch_2__4_1800.0_length_var_1850.0.son
+    │   └── batch_2__5_1975.0_length_var_2025.0.son
     ├── batch_2_outputs
     │   ├── batch_2__0_1100.0_length_var_1150.0.csv
-    │   ├── batch_2__0_1275.0_length_var_1325.0.csv
-    │   ├── batch_2__0_1450.0_length_var_1500.0.csv
-    │   ├── batch_2__0_1625.0_length_var_1675.0.csv
-    │   ├── batch_2__0_1800.0_length_var_1850.0.csv
-    │   └── batch_2__0_1975.0_length_var_2025.0.csv
+    │   ├── batch_2__1_1275.0_length_var_1325.0.csv
+    │   ├── batch_2__2_1450.0_length_var_1500.0.csv
+    │   ├── batch_2__3_1625.0_length_var_1675.0.csv
+    │   ├── batch_2__4_1800.0_length_var_1850.0.csv
+    │   └── batch_2__5_1975.0_length_var_2025.0.csv
     ├── batch_2_generated_files
     │   ├── batch_2__0_1100.0_length_var_1175.0.son
-    │   ├── batch_2__0_1275.0_length_var_1350.0.son
-    │   ├── batch_2__0_1450.0_length_var_1525.0.son
-    │   ├── batch_2__0_1625.0_length_var_1700.0.son
-    │   ├── batch_2__0_1800.0_length_var_1875.0.son
-    │   └── batch_2__0_1975.0_length_var_2050.0.son
+    │   ├── batch_2__1_1275.0_length_var_1350.0.son
+    │   ├── batch_2__2_1450.0_length_var_1525.0.son
+    │   ├── batch_2__3_1625.0_length_var_1700.0.son
+    │   ├── batch_2__4_1800.0_length_var_1875.0.son
+    │   └── batch_2__5_1975.0_length_var_2050.0.son
     ├── batch_2_outputs
     │   ├── batch_2__0_1100.0_length_var_1175.0.csv
-    │   ├── batch_2__0_1275.0_length_var_1350.0.csv
-    │   ├── batch_2__0_1450.0_length_var_1525.0.csv
-    │   ├── batch_2__0_1625.0_length_var_1700.0.csv
-    │   ├── batch_2__0_1800.0_length_var_1875.0.csv
-    │   └── batch_2__0_1975.0_length_var_2050.0.csv
+    │   ├── batch_2__1_1275.0_length_var_1350.0.csv
+    │   ├── batch_2__2_1450.0_length_var_1525.0.csv
+    │   ├── batch_2__3_1625.0_length_var_1700.0.csv
+    │   ├── batch_2__4_1800.0_length_var_1875.0.csv
+    │   └── batch_2__5_1975.0_length_var_2050.0.csv
     ├── batch_3_generated_files
     │   └── ...
     ├── batch_3_outputs
@@ -242,11 +242,11 @@ The file structure after this has been run looks like: ::
     │   └── ...
     ├── OptCache
     │   ├── SSPOC_0_1100.0.yml
-    │   ├── SSPOC_0_1275.0.yml
-    │   ├── SSPOC_0_1450.0.yml
-    │   ├── SSPOC_0_1625.0.yml
-    │   ├── SSPOC_0_1800.0.yml
-    │   └── SSPOC_0_1975.0.yml
+    │   ├── SSPOC_1_1275.0.yml
+    │   ├── SSPOC_2_1450.0.yml
+    │   ├── SSPOC_3_1625.0.yml
+    │   ├── SSPOC_4_1800.0.yml
+    │   └── SSPOC_5_1975.0.yml
     └── example.py
 
 Once those files have been again analysed in Sonnet and csv outputs made that

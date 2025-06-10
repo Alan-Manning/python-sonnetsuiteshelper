@@ -1,10 +1,9 @@
 import os
+from typing import Literal
 
 import numpy as np
 import yaml
 from matplotlib import pyplot as plt
-
-from . import analysis_tools, file_generation
 
 
 class SimpleSingleParamOptimiser:
@@ -101,7 +100,9 @@ class SimpleSingleParamOptimiser:
         desired_output_param: str,
         desired_output_param_value: float,
         desired_output_param_value_tolerence_percent: float,
-        correlation: str,
+        correlation: Literal["+", "-"],
+        min_value_for_variable_param: float | None = None,
+        max_value_for_variable_param: float | None = None,
         sonnet_mesh_size: float = 1.0,
         ignore_loading_cache: bool = False,
     ):
@@ -154,7 +155,7 @@ class SimpleSingleParamOptimiser:
             eg. if trying to get resonant frequency of 2GHz +- 1%, then this
             argument will be 'desired_output_param_value_tolerence_percent = 0.01'.
 
-        correlation: str
+        correlation: Literal["+", "-"],
             The correlation between the variable parameter and the desired
             output param. This accepts str values "+" or "-".
             If an increase in the variable_param_value results in an increase
@@ -184,11 +185,13 @@ class SimpleSingleParamOptimiser:
             raise ValueError(f"Cannot correlate {correlation}. Can only use {acceptable_correlation_strings}")
 
         if batch_1_son_filename[-4:] != ".son":
-            raise ValueError(f"batch_1_son_filename should be a sonnet file. This means it should contain a '.son' file extention.")
+            raise ValueError(
+                f"batch_1_son_filename `{batch_1_son_filename}` should be a sonnet file. This means it should contain a '.son' file extention."
+            )
 
         if batch_1_output_filename[-4:] != ".csv":
             raise ValueError(
-                f"batch_1_output_filename should be a csv output file from a simulation. This means it should contain a '.csv' file extention."
+                f"batch_1_output_filename `{batch_1_output_filename}` should be a csv output file from a simulation. This means it should contain a '.csv' file extention."
             )
         # General setup
         self.name = unique_name
@@ -229,32 +232,35 @@ class SimpleSingleParamOptimiser:
         self.generate_next_batch()
 
     def __str__(self) -> str:
-        string = "Simple_single_param_optimiser"
+        string = "SimpleSingleParamOptimiser"
         string += f"\n\t   current_batch_no: {self.get_current_batch_no()}"
         string += f"\n\tvariable_param_name: {self.variable_param_name}"
         string += f"\n\tdesired_output_param: {self.desired_output_param}"
         string += f"\n\tdesired_output_param_value: {self.desired_output_param_value}"
         return string
 
+    def __bool__(self) -> bool:
+        return self.last_result_reached_optimisation()
+
     def _create_yaml_str(self) -> str:
         """Create a yaml formated string containing all the relevant instance
         variables."""
-        state = dict(
-            name=self.name,
-            correlation=self.correlation,
-            variable_param_name=self.variable_param_name,
-            variable_param_values=self.variable_param_values,
-            desired_output_param=self.desired_output_param,
-            desired_output_param_value=self.desired_output_param_value,
-            desired_output_param_value_tolerence_percent=self.desired_output_param_value_tolerence_percent,
-            desired_output_param_values=self.desired_output_param_values,
-            next_variable_param_value=self.next_variable_param_value,
-            sonnet_mesh_size=self.sonnet_mesh_size,
-            batch_1_son_filename=self.batch_1_son_filename,
-            batch_1_son_file_path=self.batch_1_son_file_path,
-            batch_1_output_filename=self.batch_1_output_filename,
-            batch_1_output_file_path=self.batch_1_output_file_path,
-        )
+        state = {
+            "name": self.name,
+            "correlation": self.correlation,
+            "variable_param_name": self.variable_param_name,
+            "variable_param_values": self.variable_param_values,
+            "desired_output_param": self.desired_output_param,
+            "desired_output_param_value": self.desired_output_param_value,
+            "desired_output_param_value_tolerence_percent": self.desired_output_param_value_tolerence_percent,
+            "desired_output_param_values": self.desired_output_param_values,
+            "next_variable_param_value": self.next_variable_param_value,
+            "sonnet_mesh_size": self.sonnet_mesh_size,
+            "batch_1_son_filename": self.batch_1_son_filename,
+            "batch_1_son_file_path": self.batch_1_son_file_path,
+            "batch_1_output_filename": self.batch_1_output_filename,
+            "batch_1_output_file_path": self.batch_1_output_file_path,
+        }
 
         state_str = "---\n"
         for key, val in state.items():
@@ -367,6 +373,15 @@ class SimpleSingleParamOptimiser:
         analysed_file_path = f"batch_{self.get_next_batch_no()}_outputs"
         return analysed_file_path
 
+    def get_optimised_variable_param_value(self) -> float:
+        """Get the variable_param_value of the optimised file."""
+        # Strip the .son file extention and add csv extention
+        if self.last_result_reached_optimisation():
+            optimised_variable_param_value = self.get_last_variable_param_value()
+            return optimised_variable_param_value
+        else:
+            raise (LookupError("Could not get optimised variable_param_value. Optimiser has not yet found an optimised value."))
+
     def get_optimised_filename(self) -> str:
         """Get the filename of the optimised file."""
         # Strip the .son file extention and add csv extention
@@ -374,7 +389,7 @@ class SimpleSingleParamOptimiser:
             optimised_filename = self.get_last_output_filename()[:-4] + ".csv"
             return optimised_filename
         else:
-            raise (LookupError("Could not get optimised filename. Optimiser has not yet found optimised values."))
+            raise (LookupError("Could not get optimised filename. Optimiser has not yet found an optimised value."))
 
     def get_optimised_file_path(self) -> str:
         """Get the file path of the optimised file."""
@@ -382,8 +397,76 @@ class SimpleSingleParamOptimiser:
             optimised_file_path = f"batch_{self.get_current_batch_no()}_outputs"
             return optimised_file_path
         else:
-            raise (LookupError("Could not get optimised file path. Optimiser has not yet found optimised values."))
+            raise (LookupError("Could not get optimised file path. Optimiser has not yet found an optimised value."))
 
+    ##################################################################################################################################################################################################################################################################
+    def _get_closest_to_optimised(self) -> tuple[int, float]:
+        """Get the closest to optimised batch number and variable_param_value.
+        This will return the values even if the values are considered
+        optimised.
+
+        Returns
+        -------
+        batch_no: int
+            The batch number of the closest to optimised file.
+
+        closest_variable_param_value: int
+            The variable_param_value of the closest to optimised file.
+        """
+        abs_diff = np.abs(np.array(self.desired_output_param_values) - self.desired_output_param_value)
+        arg_min = int(np.argmin(abs_diff))
+        closest_variable_param_value = self.variable_param_values[arg_min]
+        batch_no = arg_min + 1
+
+        return batch_no, closest_variable_param_value
+
+    def get_closest_to_optimised_variable_param_value(self) -> float:
+        """Get the variable_param_value of the file that is currently the
+        closest to having an optimised value.
+
+        If an optimised file exists this will return that file, this is
+        equivilant to get_optimised_variable_param_value().
+        """
+        try:
+            optimised_variable_param_value = self.get_optimised_variable_param_value()
+            return optimised_variable_param_value
+        except LookupError:
+            # There isnt an optimised file so get the closest.
+            batch_no, closest_variable_param_value = self._get_closest_to_optimised()
+
+            return closest_variable_param_value
+
+    def get_closest_to_optimised_filename(self) -> str:
+        """Get the filename of the file that is currently the closest to having
+        an optimised value.
+
+        If an optimised file exists this will return that file, this is
+        equivilant to get_optimised_filename().
+        """
+        try:
+            optimised_filename = self.get_optimised_filename()
+            return optimised_filename
+        except LookupError:
+            # There isnt an optimised file so get the closest.
+            batch_no, closest_variable_param_value = self._get_closest_to_optimised()
+            closest_filename = f"batch_{batch_no}__{self.name}_{self.variable_param_name}_{closest_variable_param_value}.csv"
+
+            return closest_filename
+
+    def get_closest_to_optimised_file_path(self) -> str:
+        """Get the file path of the file that is currently the closest to
+        having an optimised value."""
+        try:
+            optimised_file_path = self.get_optimised_file_path()
+            return optimised_file_path
+        except LookupError:
+            # There isnt an optimised file so get the closest.
+            batch_no, _ = self._get_closest_to_optimised()
+            closest_optimised_file_path = f"batch_{batch_no}_outputs"
+
+            return closest_optimised_file_path
+
+    ##################################################################################################################################################################################################################################################################
     def get_last_output_filename(self) -> str:
         """Get the output filename for the last batch's generated file."""
         if self.get_current_batch_no() == 1:
@@ -420,7 +503,7 @@ class SimpleSingleParamOptimiser:
         """Check of the last desired_output_param_value is within the tolerance
         of the desired_output_param_value.
 
-        If des*(1+tol) <= (last output vlaue) <= des*(1+tol) -> True
+        If des*(1-tol) <= (last output vlaue) <= des*(1+tol) -> True
         else False.
         """
         last = self.get_last_desired_output_param_value()
@@ -461,6 +544,10 @@ class SimpleSingleParamOptimiser:
             if next_variable_param_value == self.get_last_variable_param_value():
                 next_variable_param_value = self.change_variable_param_value_by_mesh_step()
 
+        # TODO check if the next values exists somewhere in the list of variable_param_values
+        # if it does try to pick a different value by lin fitting more recent data only.
+        # if it still exists within the list then error out and say not optimised.
+        # maybe some check if next val is one mesh size bigger/smaller pick middle ground. just to stop flicking between two values over and over.
         return next_variable_param_value
 
     def change_variable_param_value_by_mesh_step(self) -> float:
@@ -534,12 +621,13 @@ class SimpleSingleParamOptimiser:
             "{batch_no}_{name}__{varaible_param_name}_{variable_param_value}.son"
         """
         if self.last_result_reached_optimisation():
-            print(f"Optimiser {self.name} Reached desired QR")
+            print(f"Optimiser {self.name} Reached desired {self.desired_output_param}.\nSkipped generate_next_batch.")
             print(f"\tBatch_number = {self.get_current_batch_no()}")
             print(f"\t{self.desired_output_param} = {self.get_last_desired_output_param_value()}")
             print(f"\t{self.variable_param_name} = {self.get_last_variable_param_value()}")
 
         if (not ignore_automatic_stop) and self.last_result_reached_optimisation():
+            self.cache_results()
             return
 
         if override_variable_param_value is None:
@@ -598,6 +686,7 @@ class SimpleSingleParamOptimiser:
                 print("ERROR")
                 raise (ValueError(f"Error, cannot optimise for {self.desired_output_param}"))
 
+        # self.cache_results()
         return
 
     def plot_optimisation(
@@ -647,14 +736,19 @@ class SimpleSingleParamOptimiser:
         ax.axhline(y=self.desired_output_param_value)
 
         if plot_fit_function and self.get_current_batch_no() > 3:
-            poly_fit = np.polyfit(x_data, y_data, deg=1)
+            # poly_fit = np.polyfit(x_data, y_data, deg=1)
+            # poly_func = np.poly1d(poly_fit)
+            # x_ax = np.linspace(min(x_data) * 0.999, max(x_data) * 1.001, 100)
+            #
+            # ax.plot(x_ax, poly_func(x_ax), label="fit")
+            poly_fit = np.polyfit(y_data, x_data, deg=1)
             poly_func = np.poly1d(poly_fit)
-            x_ax = np.linspace(min(x_data) * 0.999, max(x_data) * 1.001, 100)
+            y_ax = np.linspace(min(y_data) * 0.999, max(y_data) * 1.001, 100)
 
-            ax.plot(x_ax, poly_func(x_ax), label="fit")
+            ax.plot(poly_func(y_ax), y_ax, label="fit")
 
         if plot_next_batch_variable_value and (not self.last_result_reached_optimisation()):
-            next_variable_param_value = self.get_next_variable_param_value()
+            next_variable_param_value = self.next_variable_param_value
             ax.scatter(
                 next_variable_param_value,
                 self.desired_output_param_value,
