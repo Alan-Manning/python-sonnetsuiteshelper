@@ -12,7 +12,7 @@ def read(*names, **kwargs):
 
 setup(
     name="sonnetsuiteshelper",
-    version="1.0.14",
+    version="1.0.15",
     license="LGPL-3.0-or-later",
     description="A package to help with Sonnet Suites.",
     long_description="{}\n{}".format(
