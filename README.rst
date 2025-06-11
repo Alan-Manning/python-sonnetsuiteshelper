@@ -39,9 +39,9 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.org/project/sonnetsuiteshelper
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/Alan-Manning/python-sonnetsuiteshelper/v1.0.15.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/Alan-Manning/python-sonnetsuiteshelper/v1.0.16.svg
     :alt: Commits since latest release
-    :target: https://github.com/Alan-Manning/python-sonnetsuiteshelper/compare/v1.0.15...main
+    :target: https://github.com/Alan-Manning/python-sonnetsuiteshelper/compare/v1.0.16...main
 
 
 
