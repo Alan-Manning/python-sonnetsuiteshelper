@@ -41,7 +41,7 @@ jobs:
     permissions:
       id-token: write
     environment:
-      name: pypi-publish
+      name: pypi_publish
       url: https://pypi.org/project/sonnetsuiteshelper/
     steps:
       - name: Retrieve release distributions

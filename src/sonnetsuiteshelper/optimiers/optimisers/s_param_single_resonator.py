@@ -143,7 +143,7 @@ class SParamSingleResonatorOptimiser(SingleParamOptimiser):
         # Plotting the data from the optimiser.
         for i, (x, y) in enumerate(zip(x_data, y_data, strict=True)):
             ax.scatter(x, y, s=5, color=rgb_cycle[i])
-            ax.annotate(f"{i+1}", (x, y))
+            ax.annotate(f"{i + 1}", (x, y))
 
         # Plotting the desired_output_param_value.
         ax.axhline(y=self.desired_output_param_value)
@@ -173,7 +173,7 @@ class SParamSingleResonatorOptimiser(SingleParamOptimiser):
                 color="red",
                 marker="x",
             )
-            ax.annotate(f"{i+1}", (x, y))
+            ax.annotate(f"{i + 1}", (x, y))
         # plotting the optimiser strategy if possible
         if plot_strategy:
             self.optimisation_strategy.plot(

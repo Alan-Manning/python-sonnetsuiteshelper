@@ -154,7 +154,6 @@ def generate_file_like(
             print(f"Skiped writing file\n\tname: {output_filename}\n\tpath: {output_file_path}")
             return
 
-
     with base_file.open() as f:
         contents = f.read()
 

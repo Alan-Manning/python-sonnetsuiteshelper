@@ -37,7 +37,7 @@ select = [
     "W", # pycodestyle warnings
 ]
 src = ["src", "tests"]
-target-version = "py310"
+target-version = "py312"
 
 [tool.ruff.flake8-pytest-style]
 fixture-parentheses = false
@@ -46,7 +46,3 @@ mark-parentheses = false
 [tool.ruff.isort]
 forced-separate = ["conftest"]
 force-single-line = true
-
-[tool.black]
-line-length = 140
-target-version = ["py312"]
